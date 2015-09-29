@@ -1,0 +1,68 @@
+###################################################
+# Sample Logstash v1.5.x Configuration for Oracle WebLogic App Server 12c
+#
+#
+####################################################
+# v1.0 Doug McClure 9/23/15 Oracle WebLogic App Server 12c
+#
+#
+####################################################
+
+################################################################################################################################################################
+
+# Oracle WebLogic AppServer Logs - access.log
+# no multiline messages seen in provided samples
+
+#10.0.0.1 - - [22/Sep/2015:12:50:28 -0700] "GET /foo/wwgr.get_file?p_plugin_id=43672&p_security_group_id=68533&p_file_name=irl.css HTTP/1.1" 304 0 
+#10.0.0.1 - - [22/Sep/2015:12:50:28 -0700] "GET / HTTP/0.9" 404 1164 
+
+#this default grok pattern works, but I've broken it out below so I can set timestamp field name to match above
+#ORAWEBLOGICACCESS %{COMMONAPACHELOG}
+
+ORAWEBLOGICACCESS %{IPORHOST:clientip} %{USER:ident} %{USER:auth} \[%{HTTPDATE:origTimestamp}\] "(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})" %{NUMBER:response} (?:%{GREEDYDATA:bytes}|-)
+
+################################################################################################################################################################
+
+# Oracle WebLogic AppServer error Logs - foobar1.log
+# multiline messages seen in provided samples
+
+####<Sep 20, 2015 5:48:44 AM MST> <Info> <Store> <foobar1> <foobar1> <[STANDBY] ExecuteThread: '1' for queue: 'weblogic.kernel.Default (self-tuning)'> <<WLS Kernel>> <> <> <14427> <BEA-280009> <The persistent file store "WLS_DIAGNOSTICS" (2db5cef1b) has been opened: blockSize=512 actualWritePolicy="Disabled(single-handle-non-direct)" explicitIOEnforced=true records=21.> 
+####<Jul 6, 2015 11:44:57 AM MST> <Info> <Health> <foobar1> <foobar1> <weblogic.GCMonitor> <<anonymous>> <> <> <14329> <BEA-310002> <64% of the total memory in the server is free.> 
+####<Sep 20, 2015 5:48:28 AM MST> <Info> <RJVM> <foobar1> <foobar1> <[STANDBY] ExecuteThread: '1' for queue: 'weblogic.kernel.Default (self-tuning)'> <<WLS Kernel>> <> <> <8634> <BEA-000570> <Network Configuration for Channel "foobar1"
+# Listen Address		 10.0.0.1:7433
+# Public Address		 N/A
+# Http Enabled		 true
+# Tunneling Enabled	 false
+# Outbound Enabled	 false
+# Admin Traffic Enabled	 true> 
+
+####<Sept 22, 2004 10:46:51 AM EST> <Notice> <WebLogicServer> <MyComputer>
+<examplesServer><main> <<WLS Kernel>> <> <null> <1080575211904> <BEA-000360> <Server started in RUNNING mode> 
+#In this example, the message attributes are: Locale-formatted Timestamp, Severity, Subsystem, Machine Name, Server Name, Thread ID, User ID, Transaction ID, Diagnostic Context ID, #Raw Time Value, Message ID, and Message Text.
+
+ORAWEBLOGICERRTIME %{MONTH}\s+%{MONTHDAY},\s+%{YEAR}\s+%{HOUR}:%{MINUTE}:%{SECOND}\s+%{DATA}\s+%{DATA}
+
+ORAWEBLOGICERR (?m)####<%{ORAWEBLOGICERRTIME:origTimestamp}>\s+<%{DATA:severity}>\s+<%{DATA:subsystem}>\s+<%{DATA:origHostname}>\s+<%{DATA:serverName}>\s+<%{DATA:threadID}>\s+<%{DATA:userID}>\s+<%{DATA:transactionID}>\s+<%{DATA:diagContextID}>\s+<%{DATA:rawTimeValue}>\s+<%{DATA:messageID}>\s+<%{DATA:origMessage}>\s+
+
+################################################################################################################################################################
+
+# Oracle WebLogic AppServer Logs - foobar1.out
+# multiline messages seen in provided samples
+
+#<Sep 20, 2015 5:49:15 AM MST> <Notice> <WebLogicServer> <BEA-000365> <Server state changed to RUNNING.> 
+#<Sep 20, 2015 5:49:15 AM MST> <Notice> <WebLogicServer> <BEA-000360> <The server started in RUNNING mode.> 
+#<Sep 20, 2015 4:00:00 PM MST> <Notice> <LoggingService> <BEA-320400> <The log file /usr/oracle/user_projects/domains/foo_domain/servers/foobar1/logs/access.log will be rotated. Reopen the log file if tailing has stopped. This can happen on some platforms, such as Windows.> 
+#<Sep 20, 2015 4:00:00 PM MST> <Notice> <LoggingService> <BEA-320401> <The log file has been rotated to /usr/oracle/user_projects/domains/foo_domain/servers/foobar1/logs/access.log00403. Log messages will continue to be logged in /usr/oracle/user_projects/domains/foo_domain/servers/foobar1/logs/access.log.> 
+
+#<Sept 22, 2004 10:51:10 AM EST> <Notice> <WebLogicServer> <BEA-000360> <Server started in RUNNING mode>
+#In this example, the message attributes are: Locale-formatted Timestamp, Severity, Subsystem, Message ID, and Message Text.
+
+ORAWEBLOGICOUTTIME1 %{MONTH}\s+%{MONTHDAY},\s+%{YEAR}\s+%{HOUR}:%{MINUTE}:%{SECOND}\s+%{DATA}
+ORAWEBLOGICOUTTIME2 %{MONTH}\s+%{MONTHDAY},\s+%{YEAR}\s+%{HOUR}:%{MINUTE}:%{SECOND}\s+%{DATA}\s+%{DATA}
+
+ORAWEBLOGOUTTIMEFINAL (?:%{ORAWEBLOGICOUTTIME1}|%{ORAWEBLOGICOUTTIME2})
+
+ORAWEBLOGICOUT (?m)<%{ORAWEBLOGOUTTIMEFINAL:origTimestamp}>\s+<%{DATA:severity}>\s+<%{DATA:subsystem}>\s+<%{DATA:messageID}>(\s+<%{DATA:origMessage}>)?
+ORAWEBLOGICOUT2 (?m)<%{ORAWEBLOGOUTTIMEFINAL:origTimestamp}>\s+<%{DATA:severity}>\s+<%{DATA:subsystem}>\s+<%{DATA:messageID}>%{GREEDYDATA:origMessage}
+
+################################################################################################################################################################
