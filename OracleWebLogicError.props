@@ -1,0 +1,146 @@
+[SCALA_server]
+scalaHome: /opt/scala/driver
+
+[DSV_file]
+delimiter: ,
+quoteChar: "
+moduleName: OracleWebLogicError
+version: 1.0.0.0
+
+[field0_indexConfig]
+name: logRecord
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: false
+filterable: false
+searchable: true
+path_1: content.text
+combine: FIRST
+
+[field1_indexConfig]
+name: timestamp
+dataType: DATE
+dateFormat: yyyy-MM-dd'T'HH:mm:ss.SSSX
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field2_indexConfig]
+name: hostname
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field3_indexConfig]
+name: logfile
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field4_indexConfig]
+name: severity
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field5_indexConfig]
+name: subsystem
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field6_indexConfig]
+name: origHostname
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field7_indexConfig]
+name: serverName
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field8_indexConfig]
+name: threadID
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field9_indexConfig]
+name: userID
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field10_indexConfig]
+name: transactionID
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field11_indexConfig]
+name: diagContextID
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field12_indexConfig]
+name: rawTimeValue
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: false
+filterable: false
+searchable: true
+
+[field13_indexConfig]
+name: messageID
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: true
+filterable: true
+searchable: true
+
+[field14_indexConfig]
+name: origMessage
+dataType: TEXT
+retrievable: true
+retrieveByDefault: true
+sortable: false
+filterable: false
+searchable: true
